@@ -48,7 +48,9 @@ jobs:
           fi
       - name: Upload result to GitHub Code Scanning
         uses: github/codeql-action/upload-sarif@e4fba868fa4b1b91e1fdab776edc8cfbe6e9fb81 # v4.37.3
-        if: always()
+        # Fork-friendly: skip when Snyk did not produce a SARIF file (e.g. SNYK_TOKEN
+        # not configured). Behavior is unchanged when a token is present.
+        if: always() && hashFiles('snyk.sarif') != ''
         with:
           sarif_file: snyk.sarif
           category: snyk-container-web
